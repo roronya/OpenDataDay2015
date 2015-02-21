@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+	<meta charset="utf-8">
+	<title>gmapsサンプル</title>
+	<style>
+         @charset "utf-8";
+         #map {
+             height: 800px;
+         }
+	</style>
+	<script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+	<script src="js/gmaps.js"></script>
+	<script>
+         window.onload = function(){
+             var map = new GMaps({
+		 div: "#map",
+		 lat: 36.651921,
+		 lng: 138.188708,
+		 zoom: 15,
+             });
+
+             map.addMarker({
+		 lat: 36.643,
+		 lng: 138.188686,
+		 title: "長野駅",
+	     });
+             map.addMarker({
+		 lat: 36.661975,
+		 lng: 138.187856,
+		 title: "善光寺",
+	     });
+
+	     <% @places.each do |place| %>
+	     map.addMarker({
+                 lat: <%= place['location']['lat'] %>,
+                 lng: <%= place['location']['lng'] %>,
+		 title: 'hoge',
+		 infoWindow:{
+		     content: "<%= place['name'] %>"
+		 }
+	     });
+	     <% end %>
+
+	     
+             map.drawRoute({
+		 origin: [36.661975, 138.187856],
+		 destination: [<%= @places[0]['location']['lat'] %>, <%= @places[0]['location']['lng'] %>],
+		 trabelMode: 'walking',
+		 strokeColor: '#131540',
+		 strokeOpacity: '0.6',
+		 strokeWeight: 6
+	     });
+
+             map.drawRoute({
+		 origin: [<%= @places.last['location']['lat']%>, <%= @places.last['location']['lng'] %>],
+		 destination: [36.643,138.188686],
+		 trabelMode: 'walking',
+		 strokeColor: '#131540',
+		 strokeOpacity: '0.6',
+		 strokeWeight: 6
+	     });
+
+	     <% for i in 0..@places.count()-2 %>
+	     map.drawRoute({
+		 origin: [<%= @places[i]['location']['lat']%>, <%= @places[i]['location']['lng'] %>],
+		 destination: [<%= @places[i+1]['location']['lat']%>, <%= @places[i+1]['location']['lng'] %>],
+		 trabelMode: 'walking',
+		 strokeColor: '#131540',
+		 strokeOpacity: '0.6',
+		 strokeWeight: 6
+	     });
+	     <% end %>
+         };
+
+	</script>
+    </head>
+    <body>
+	<div id="map"></div>
+    </body>
+</html>
